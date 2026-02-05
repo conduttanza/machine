@@ -25,15 +25,19 @@ class Move():
         Thread(target=self.update, daemon=False).start()
         
     def update(self):
-        while self.run == True:
+        if self.run == True:
             self.moveFwd()
         self.stop()
     
     def moveFwd(self):
+        self.pi.write(self.AIN1, 1)
+        self.pi.write(self.AIN2, 0)
         self.pi.set_PWM_dutycycle(self.PWM,128)
         time.sleep(config.delay)
         self.run = False
 
     def stop(self):
         self.pi.set_PWM_dutycycle(self.PWM,0)
+        self.pi.write(self.AIN1, 0)
+        self.pi.write(self.AIN2, 0)
         self.pi.stop()
