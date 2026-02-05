@@ -2,5 +2,5 @@
 
 class Config():
     run = True
-    delay = 5
+    delay = 0.1
     App = True
