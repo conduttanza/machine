@@ -20,9 +20,15 @@ class Move():
         Thread(target=self.update, daemon=False).start()
         
     def update(self):
+        self.moveFwd()
+    
+    def moveFwd(self):
+        pwm = GPIO.PWM(MOTOR_1, 500)
         if self.run == True:
-            GPIO.output(MOTOR_1,GPIO.HIGH)
+            pwm.start(0)
+            pwm.ChangeDutyCycle(50)
             time.sleep(self.delay)
             self.run = False
         else:
+            pwm.stop()
             GPIO.cleanup()
