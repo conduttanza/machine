@@ -17,10 +17,11 @@ class Move():
         self.PWM = 16
         self.AIN1 = 20
         self.AIN2 = 21
-        self.pi.set_mode(self.AIN1, pigpio.OUTPUT)
+        for pin in self.AIN1, self.AIN2:
+            self.pi.set_mode(pin, pigpio.OUTPUT)
         self.delay =  config.delay
         self.run = config.run
-        self.pi.set_PWM_frequency(self.AIN1,1000)
+        self.pi.set_PWM_frequency(self.PWM,1000)
         Thread(target=self.update, daemon=False).start()
         
     def update(self):
@@ -34,5 +35,5 @@ class Move():
         self.run = False
 
     def stop(self):
-        self.pi.set_PWM_dutycycle(self.AIN1,0)
+        self.pi.set_PWM_dutycycle(self.PWM,0)
         self.pi.stop()
