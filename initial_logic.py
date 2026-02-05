@@ -3,13 +3,12 @@
 from config import Config
 config = Config()
 from window import Window
-window = Window()
 import pigpio
 from threading import Thread
 import time
     
 class Move():
-    def __init__(self):
+    def __init__(self, window):
         self.window = window
         self.pi = pigpio.pi()
         if not self.pi.connected:
@@ -29,8 +28,6 @@ class Move():
                 self.moveFwd()
                 self.window.move = False
             time.sleep(config.delay)
-        
-
     
     def moveFwd(self):
         print('moving huh')
@@ -44,4 +41,20 @@ class Move():
         self.pi.set_PWM_dutycycle(self.PWM,0)
         self.pi.write(self.AIN1, 0)
         self.pi.write(self.AIN2, 0)
+
+# Create window first but DON'T start main() yet
+window = Window.__new__(Window)
+window.running = True
+window.move = False
+import pygame
+pygame.init()
+pygame.display.set_caption('motor movement')
+window.screen = pygame.display.set_mode((600,600))
+window.clock = pygame.time.Clock()
+
+# NOW create Move with the window reference
+move = Move(window)
+
+# FINALLY run the blocking Pygame loop
+window.main()
 

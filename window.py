@@ -18,7 +18,7 @@ class Window():
     
     def windowUpdate(self):
         if config.App == True:
-            Thread(target=self.main, daemon=True).start()
+            self.main()
     
     def main(self):
         try:
