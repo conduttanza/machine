@@ -2,12 +2,11 @@
 
 from config import Config
 config = Config()
-
+from window import Window
+window = Window()
 import pigpio
 from threading import Thread
 import time
-
-
     
 class Move():
     def __init__(self):
@@ -27,7 +26,8 @@ class Move():
     def update(self):
         if self.run == True:
             self.moveFwd()
-        self.stop()
+        #self.stop()
+        self.run = window.returnTrue() or False
     
     def moveFwd(self):
         self.pi.write(self.AIN1, 1)
