@@ -1,6 +1,6 @@
 #05/02/2026
 
-from run import Config
+from config import Config
 config = Config()
 
 import RPi.GPIO as GPIO

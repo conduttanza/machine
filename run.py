@@ -1,5 +1,4 @@
 #05/02/2026
+from initial_logic import Move
 
-class Config():
-    run = True
-    delay = 5
+Move()
