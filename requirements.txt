@@ -1,5 +1,2 @@
 pigpio
-time
 numpy
-math
-threading
