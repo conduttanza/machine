@@ -29,6 +29,7 @@ class Move():
                 self.moveFwd()
                 self.window.move = False
             time.sleep(config.delay)
+        
 
     
     def moveFwd(self):
@@ -43,4 +44,4 @@ class Move():
         self.pi.set_PWM_dutycycle(self.PWM,0)
         self.pi.write(self.AIN1, 0)
         self.pi.write(self.AIN2, 0)
-        
+

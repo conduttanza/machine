@@ -1,3 +1,6 @@
+import os
+os.environ['SDL_VIDEODRIVER'] = 'x11'       # ensure X11 driver
+os.environ['SDL_OPENGL'] = 'software'       # use software OpenGL
 import pygame
 from threading import Thread
 from config import Config
