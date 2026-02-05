@@ -14,12 +14,13 @@ class Move():
         self.pi = pigpio.pi()
         if not self.pi.connected:
             exit()
-        self.MOTOR_1 = 18
-        self.MOTOR_2 = None
+        self.PWM = 16
+        self.AIN1 = 20
+        self.AIN2 = 21
         self.pi.set_mode(self.MOTOR_1, pigpio.OUTPUT)
         self.delay =  config.delay
         self.run = config.run
-        self.pi.set_PWM_frequency(self.MOTOR_1,1000)
+        self.pi.set_PWM_frequency(self.AIN1,1000)
         Thread(target=self.update, daemon=False).start()
         
     def update(self):
@@ -28,10 +29,10 @@ class Move():
         self.stop()
     
     def moveFwd(self):
-        self.pi.set_PWM_dutycycle(self.MOTOR_1,128)
+        self.pi.set_PWM_dutycycle(self.PWM,128)
         time.sleep(config.delay)
         self.run = False
 
     def stop(self):
-        self.pi.set_PWM_dutycycle(self.MOTOR_1,0)
+        self.pi.set_PWM_dutycycle(self.AIN1,0)
         self.pi.stop()
