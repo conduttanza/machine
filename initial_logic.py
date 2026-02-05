@@ -17,7 +17,7 @@ class Move():
         self.PWM = 16
         self.AIN1 = 20
         self.AIN2 = 21
-        self.pi.set_mode(self.MOTOR_1, pigpio.OUTPUT)
+        self.pi.set_mode(self.AIN1, pigpio.OUTPUT)
         self.delay =  config.delay
         self.run = config.run
         self.pi.set_PWM_frequency(self.AIN1,1000)
