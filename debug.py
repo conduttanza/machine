@@ -1,46 +1,34 @@
-#05/02/2026
+#07/02/2026
 
 from config import Config
 config = Config()
 from window import Window
-import pigpio
 from threading import Thread
 import time
     
-class Move():
+class Move_not_pi():
     def __init__(self, window):
+        print('not pi')
         self.window = window
-        self.pi = pigpio.pi()
-        if not self.pi.connected:
-            exit()
-        self.PWM = 16
-        self.AIN1 = 20
-        self.AIN2 = 21
-        for pin in (self.AIN1, self.AIN2):
-            self.pi.set_mode(pin, pigpio.OUTPUT)
         self.delay =  config.delay
-        self.pi.set_PWM_frequency(self.PWM,1000)
         Thread(target=self.update, daemon=True).start()
         
     def update(self):
         while True:
             if getattr(self.window, 'move', False):
                 self.moveFwd()
-                self.window.move = False
             if getattr(self.window, 'move') == False:
                 self.stop()
             time.sleep(config.delay)
     
     def moveFwd(self):
-        self.pi.write(self.AIN1, 1)
-        self.pi.write(self.AIN2, 0)
-        self.speed = getattr(self.window, 'speed', 32)
-        self.pi.set_PWM_dutycycle(self.PWM,self.speed)
+        #print('moving')
+        speed = getattr(self.window, 'speed', 0)
+        print(f'speed: {speed}')
 
     def stop(self):
-        self.pi.set_PWM_dutycycle(self.PWM,0)
-        self.pi.write(self.AIN1, 0)
-        self.pi.write(self.AIN2, 0)
+        print('idle')
+        
 
 window = Window.__new__(Window)
 window.running = True
@@ -50,7 +38,7 @@ pygame.init()
 pygame.display.set_caption('motor movement')
 window.screen = pygame.display.set_mode((600,600))
 window.clock = pygame.time.Clock()
-move = Move(window)
+move = Move_not_pi(window)
 
 window.main()
 
