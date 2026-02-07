@@ -61,6 +61,7 @@ class Window():
                             self.move = True
                             self.move_slider = True
                         if stopButton.collidepoint(event.pos):
+                            print('stop')
                             self.move = False
                             self.lastMousePos = None
                     elif event.type == pygame.MOUSEBUTTONUP:

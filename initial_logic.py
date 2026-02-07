@@ -23,15 +23,27 @@ class Move():
         Thread(target=self.update, daemon=True).start()
         
     def update(self):
+        self.speed = 0
         while True:
             if getattr(self.window, 'move', False):
                 self.speed = getattr(self.window, 'speed', 8)
-                if self.speed > 0:
+                #print(f'self.speed = {self.speed}')
+                if self.speed >= 0:
                     self.moveFwd()
                 elif self.speed < 0:
+                    self.speed = -self.speed
                     self.moveBack()
             if getattr(self.window, 'move') == False:
-                self.stop()
+                actSpeed = getattr(self,'speed')
+                if actSpeed < 0:
+                    self.speed = -self.speed
+                    self.moveBack()
+                else:
+                    self.moveFwd()
+                self.speed -= 4
+                if -8 < actSpeed < 8:
+                    self.stop()
+                    self.speed = 0
             time.sleep(config.delay)
     
     def moveFwd(self):
