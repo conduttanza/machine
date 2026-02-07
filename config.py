@@ -1,6 +1,9 @@
 #05/02/2026
 
 class Config():
+    motorRun = False
+    servoRun = True
+    #
     run = True
     delay = 0.1
     App = True

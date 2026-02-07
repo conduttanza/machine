@@ -1,12 +1,18 @@
 #05/02/2026
+from config import Config
+config = Config()
 
 pi = 0
 if pi == True:
-    from initial_logic import Move
-    Move()
-    Move.cleanUp()
-    pass
+    from initial_logic import Motor, Servo
+    if config.motorRun == True:
+        Motor()
+        Motor.cleanUp()
+    if config.servoRun == True:
+        Servo()
 elif pi == False:
-    from debug import Move_not_pi
-    Move_not_pi()
-    
+    from debug import Motor_not_pi, Servo_not_pi
+    if config.motorRun == True:
+        Motor_not_pi()
+    if config.servoRun == True:
+        Servo_not_pi()

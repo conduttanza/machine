@@ -6,8 +6,26 @@ from window import Window
 import pigpio
 from threading import Thread
 import time
+
+class Servo():
+    def __init__(self, window):
+        self.window = window
+        self.pi = pigpio.pi()
+        if not self.pi.connected:
+            exit()
+        self.servoPin = 17
+        self.pi.set_servo_pulsewidth(self.servoPin,1500)
+        Thread(target=self.update, daemon=True).start()
+        
+    def update(self):
+        while True:
+            self.angle = getattr(self.window, 'speed', 0)*(4000/(config.slider_len))+1500
+            self.pi.set_servo_pulsewidth(self.servoPin,self.angle)
     
-class Move():
+    def stop(self):
+        self.pi.set_servo_pulsewidth(self.servoPin, 0)
+
+class Motor():
     def __init__(self, window):
         self.window = window
         self.pi = pigpio.pi()
@@ -80,7 +98,7 @@ pygame.init()
 pygame.display.set_caption('motor movement')
 window.screen = pygame.display.set_mode((600,600))
 window.clock = pygame.time.Clock()
-move = Move(window)
+move = Motor(window)
 
 window.main()
 
