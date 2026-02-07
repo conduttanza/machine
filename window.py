@@ -46,6 +46,7 @@ class Window():
                         pygame.draw.circle(self.screen,(0,0,0),(self.lastMousePos[0],config.slider_y+config.slider_height/2),10)
                     else:
                         pygame.draw.circle(self.screen,(0,0,0),(300,config.slider_y+config.slider_height/2),10)
+                        self.speed = 0
                     self.move_slider = False
                     
                 for event in pygame.event.get():
@@ -69,7 +70,6 @@ class Window():
                         self.move_slider = False
                         if button.collidepoint(event.pos):
                             self.move = False
-                            self.lastMousePos = None
 
                         
                 pygame.display.flip()

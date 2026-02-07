@@ -17,7 +17,7 @@ class Servo_not_pi():
             print(f'angle: {self.angle}')
     
     def stop(self):
-        self.pi.set_servo_pulsewidth(self.servoPin, 0)
+        print('stop')
 
 class Motor_not_pi():
     def __init__(self, window):

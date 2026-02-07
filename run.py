@@ -2,7 +2,7 @@
 from config import Config
 config = Config()
 
-pi = 0
+pi = 1
 if pi == True:
     from initial_logic import Motor, Servo
     if config.motorRun == True:
