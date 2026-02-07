@@ -98,7 +98,11 @@ pygame.init()
 pygame.display.set_caption('motor movement')
 window.screen = pygame.display.set_mode((600,600))
 window.clock = pygame.time.Clock()
-move = Motor(window)
+if config.motorRun == True:
+    motor = Motor(window)
+if config.servoRun == True:
+    servo = Servo(window)
+
 
 window.main()
 
