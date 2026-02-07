@@ -58,6 +58,7 @@ class Motor():
                     elif self.speed < self.targetSpeed - 7:
                         self.speed += 8
                     self.moveBack()
+                self.speed = max(255, min(-255, self.speed))
             if getattr(self.window, 'move') == False:
                 actSpeed = getattr(self,'speed')
                 if actSpeed < 0:
@@ -75,19 +76,11 @@ class Motor():
     def moveFwd(self):
         self.pi.write(self.AIN1, 1)
         self.pi.write(self.AIN2, 0)
-        if getattr(self, 'speed') > 255:
-            self.speed = 255
-        elif getattr(self, 'speed') < 0:
-            self.speed = 0
         self.pi.set_PWM_dutycycle(self.PWM,self.speed)
     
     def moveBack(self):
         self.pi.write(self.AIN1,0)
         self.pi.write(self.AIN2,1)
-        if getattr(self, 'speed') > 255:
-            self.speed = 255
-        elif getattr(self, 'speed') < 0:
-            self.speed = 0
         self.pi.set_PWM_dutycycle(self.PWM,-self.speed)
 
     def stop(self):
