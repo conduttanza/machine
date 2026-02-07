@@ -51,14 +51,21 @@ class Motor():
                         self.speed -= 8
                     elif self.speed < self.targetSpeed - 7:
                         self.speed += 8
+                    if self.speed > 255:
+                        self.speed = 255
+                    elif self.speed < 0:
+                        self.speed = 0
                     self.moveFwd()
                 elif self.targetSpeed < 0:
                     if self.speed > self.targetSpeed + 7:
                         self.speed -= 8
                     elif self.speed < self.targetSpeed - 7:
                         self.speed += 8
+                    if self.speed < -255:
+                        self.speed = -255
+                    elif self.speed > 0:
+                        self.speed = 0
                     self.moveBack()
-                self.speed = max(255, min(-255, self.speed))
             if getattr(self.window, 'move') == False:
                 actSpeed = getattr(self,'speed')
                 if actSpeed < 0:
