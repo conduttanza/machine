@@ -25,12 +25,11 @@ class Move():
     def update(self):
         while True:
             if getattr(self.window, 'move', False):
-                self.speed = getattr(self.window, 'speed', 32)
+                self.speed = getattr(self.window, 'speed', 8)
                 if self.speed > 0:
                     self.moveFwd()
                 elif self.speed < 0:
                     self.moveBack()
-                self.window.move = False
             if getattr(self.window, 'move') == False:
                 self.stop()
             time.sleep(config.delay)

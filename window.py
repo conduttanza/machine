@@ -24,6 +24,7 @@ class Window():
         try:
             button = pygame.Rect(10,10,75,75)
             slider = pygame.Rect(config.slider_x,config.slider_y,config.slider_len,config.slider_height)
+            stopButton = pygame.Rect(515,10,75,75)
             
             while self.running: 
                 
@@ -31,6 +32,7 @@ class Window():
                 
                 pygame.draw.rect(self.screen, (0,255,0), button)
                 pygame.draw.rect(self.screen, (0,0,255), slider)
+                pygame.draw.rect(self.screen, (255,0,0), stopButton)
                 
                 self.mouse_pos = pygame.mouse.get_pos()
                 move_slider = getattr(self, 'move_slider', False)
@@ -38,25 +40,36 @@ class Window():
                 if move_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
                     pygame.draw.circle(self.screen,(0,0,0),(self.mouse_pos[0],config.slider_y+config.slider_height/2),10)
                     self.speed = (self.mouse_pos[0] - (config.slider_x+config.slider_len/2))/2
+                    self.lastMousePos = self.mouse_pos
                 else:
-                    pygame.draw.circle(self.screen,(0,0,0),(300,config.slider_y+config.slider_height/2),10)
+                    if getattr(self, 'lastMousePos', None) != None:
+                        pygame.draw.circle(self.screen,(0,0,0),(self.lastMousePos[0],config.slider_y+config.slider_height/2),10)
+                    else:
+                        pygame.draw.circle(self.screen,(0,0,0),(300,config.slider_y+config.slider_height/2),10)
                     self.move_slider = False
-                
+                    
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.running = False
                     elif event.type == pygame.MOUSEBUTTONDOWN:
+                        #print('MOUSE CLICK')
                         if button.collidepoint(event.pos):
                             self.move = True
                             self.speed = 32
+                            self.lastMousePos = (config.slider_x+config.slider_len/2+self.speed*2,self.mouse_pos[1])
                         if slider.collidepoint(event.pos):
                             self.move = True
                             self.move_slider = True
+                        if stopButton.collidepoint(event.pos):
+                            self.move = False
+                            self.lastMousePos = None
                     elif event.type == pygame.MOUSEBUTTONUP:
+                        #print('MOUSE UP')
+                        self.move_slider = False
                         if button.collidepoint(event.pos):
                             self.move = False
-                        if not slider.collidepoint(event.pos):
-                            self.move_slider = False
+                            self.lastMousePos = None
+
                         
                 pygame.display.flip()
                 self.clock.tick(127)

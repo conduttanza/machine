@@ -16,15 +16,23 @@ class Move_not_pi():
     def update(self):
         while True:
             if getattr(self.window, 'move', False):
-                self.moveFwd()
+                self.speed = getattr(self.window, 'speed', 8)
+                #print(f'self.speed = {self.speed}')
+                if self.speed >= 0:
+                    self.moveFwd()
+                elif self.speed < 0:
+                    self.moveBack()
             if getattr(self.window, 'move') == False:
                 self.stop()
             time.sleep(config.delay)
     
     def moveFwd(self):
-        #print('moving')
-        speed = getattr(self.window, 'speed', 0)
-        print(f'speed: {speed}')
+        #print('moving fwd')
+        print(f'speed: {self.speed}')
+    
+    def moveBack(self):
+        #print('moving bwd')
+        print(f'speed: {self.speed}')
 
     def stop(self):
         print('idle')
