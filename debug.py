@@ -22,16 +22,16 @@ class Move_not_pi():
                 if self.speed >= 0:
                     self.moveFwd()
                 elif self.speed < 0:
-                    self.speed = -self.speed
                     self.moveBack()
             if getattr(self.window, 'move') == False:
                 actSpeed = getattr(self,'speed')
                 if actSpeed < 0:
-                    self.speed = -self.speed
+                    print('backwards')
                     self.moveBack()
+                    self.speed +=4
                 else:
                     self.moveFwd()
-                self.speed -= 4
+                    self.speed -= 4
                 if -8 < actSpeed < 8:
                     self.stop()
                     self.speed = 0
