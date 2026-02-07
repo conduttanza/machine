@@ -17,22 +17,30 @@ class Move_not_pi():
         self.speed = 0
         while True:
             if getattr(self.window, 'move', False):
-                self.speed = getattr(self.window, 'speed', 8)
+                self.targetSpeed = getattr(self.window, 'speed', 8)
                 #print(f'self.speed = {self.speed}')
-                if self.speed >= 0:
+                if self.targetSpeed >= 0:
+                    if self.speed > self.targetSpeed + 7:
+                        self.speed -= 8
+                    elif self.speed < self.targetSpeed - 7:
+                        self.speed += 8
                     self.moveFwd()
-                elif self.speed < 0:
+                elif self.targetSpeed < 0:
+                    if self.speed > self.targetSpeed + 7:
+                        self.speed -= 8
+                    elif self.speed < self.targetSpeed - 7:
+                        self.speed += 8
                     self.moveBack()
             if getattr(self.window, 'move') == False:
                 actSpeed = getattr(self,'speed')
                 if actSpeed < 0:
-                    print('backwards')
+                    #print('backwards')
                     self.moveBack()
-                    self.speed +=4
+                    self.speed +=8
                 else:
                     self.moveFwd()
-                    self.speed -= 4
-                if -8 < actSpeed < 8:
+                    self.speed -= 8
+                if -12 < actSpeed < 12:
                     self.stop()
                     self.speed = 0
             time.sleep(config.delay)
