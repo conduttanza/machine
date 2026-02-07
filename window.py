@@ -2,6 +2,7 @@
 import pygame
 from config import Config
 config = Config()
+from text_labels import Label
 
 class Window():
     def __init__(self):
@@ -22,17 +23,16 @@ class Window():
         try:
             squareSide = 75
             margin = 10
+            #stop label
+            Label(self.screen,config.labelForStop,600-squareSide+0.2*margin,3*margin)
+            Label(self.screen,config.labelForCruise,margin,3*margin)
             # MAKE THE COMMANDS ON PYGAME'S WINDOW
-            
             # here lies the all-mighty button for 32 / 256 throttle
             button = pygame.Rect(margin,margin,squareSide,squareSide)
-            
             #slider to set motor's speed
             slider_motor_speed = pygame.Rect(config.slider_x,config.slider_y,config.slider_len,config.slider_height)
-            
             #slider to set servo's angle
             slider_servo_1 = pygame.Rect(config.slider_x,config.slider_servo_y,config.slider_len,config.slider_height)
-            
             #DEFCON 1
             stopButton = pygame.Rect(600-squareSide-margin,margin,squareSide,squareSide)
             
@@ -44,6 +44,7 @@ class Window():
                 pygame.draw.rect(self.screen, (config.BLUE), slider_motor_speed)
                 pygame.draw.rect(self.screen, (config.BLUE), slider_servo_1)
                 pygame.draw.rect(self.screen, (config.RED), stopButton)
+                Label.show_labels()
                 #GET THE POSITION FOR THE SLIDER MARKER
                 self.mouse_pos = pygame.mouse.get_pos()
                 move_motor_slider = getattr(self, 'move_motor_slider', False)

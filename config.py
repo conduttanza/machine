@@ -1,6 +1,9 @@
 #05/02/2026
 
 class Config():
+    labelForStop = 'STOP'
+    labelForCruise = 'CRUISE'
+    #
     motorRun = True
     servoRun = True
     #
