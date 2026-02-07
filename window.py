@@ -107,6 +107,8 @@ class Window():
                             self.lastMotorPos = (300,0)
                             self.lastServoPos = (300,0)
                             self.lastMousePos = None
+                            self.speed = 0
+                            self.servo_angle = 0
                     elif event.type == pygame.MOUSEBUTTONUP:
                         #print('MOUSE UP')
                         #STOP SLIDERS IF MOUSE UP

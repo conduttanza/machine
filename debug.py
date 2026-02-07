@@ -15,7 +15,7 @@ class Servo_not_pi():
         while True:
             self.angle = getattr(self.window, 'servo_angle', 0)*(4000/(config.slider_len))+1500
             if getattr(self, 'angle',1500) != 1500:
-                print(f'angle: {self.angle}')
+                print(f'angle: {round(self.angle)}')
     
     def stop(self):
         print('stop')
@@ -61,11 +61,13 @@ class Motor_not_pi():
     
     def moveFwd(self):
         #print('moving fwd')
-        print(f'speed: {self.speed}')
+        if getattr(self, 'speed') != 0:
+            print(f'speed: {self.speed}')
     
     def moveBack(self):
         #print('moving bwd')
-        print(f'speed: {self.speed}')
+        if getattr(self, 'speed') != 0:
+            print(f'speed: {self.speed}')
 
     def stop(self):
         pass#print('idle')
