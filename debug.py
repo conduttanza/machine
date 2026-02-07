@@ -13,8 +13,9 @@ class Servo_not_pi():
         
     def update(self):
         while True:
-            self.angle = getattr(self.window, 'speed', 0)*(4000/(config.slider_len))+1500
-            print(f'angle: {self.angle}')
+            self.angle = getattr(self.window, 'servo_angle', 0)*(4000/(config.slider_len))+1500
+            if getattr(self, 'angle',1500) != 1500:
+                print(f'angle: {self.angle}')
     
     def stop(self):
         print('stop')
@@ -30,8 +31,8 @@ class Motor_not_pi():
         self.speed = 0
         while True:
             if getattr(self.window, 'move', False):
-                self.targetSpeed = getattr(self.window, 'speed', 8)
-                #print(f'self.speed = {self.speed}')
+                self.targetSpeed = getattr(self.window, 'speed', 0)
+                #print(f'self.speed = {self.targetSpeed}')
                 if self.targetSpeed >= 0:
                     if self.speed > self.targetSpeed + 7:
                         self.speed -= 8
@@ -48,10 +49,10 @@ class Motor_not_pi():
                 actSpeed = getattr(self,'speed')
                 if actSpeed < 0:
                     #print('backwards')
-                    self.moveBack()
+                    #self.moveBack()
                     self.speed +=8
                 else:
-                    self.moveFwd()
+                    #self.moveFwd()
                     self.speed -= 8
                 if -12 < actSpeed < 12:
                     self.stop()
@@ -68,20 +69,4 @@ class Motor_not_pi():
 
     def stop(self):
         pass#print('idle')
-        
-
-window = Window.__new__(Window)
-window.running = True
-window.move = False
-import pygame
-pygame.init()
-pygame.display.set_caption('motor movement')
-window.screen = pygame.display.set_mode((600,600))
-window.clock = pygame.time.Clock()
-if config.motorRun == True:
-    motor = Motor_not_pi(window)
-if config.servoRun == True:
-    servo = Servo_not_pi(window)
-
-window.main()
 

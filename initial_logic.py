@@ -13,13 +13,13 @@ class Servo():
         self.pi = pigpio.pi()
         if not self.pi.connected:
             exit()
-        self.servoPin = 17
+        self.servoPin = 23
         self.pi.set_servo_pulsewidth(self.servoPin,1500)
         Thread(target=self.update, daemon=True).start()
         
     def update(self):
         while True:
-            self.angle = getattr(self.window, 'speed', 0)*(4000/(config.slider_len))+1500
+            self.angle = getattr(self.window, 'servo_angle', 0)*(4000/(config.slider_len))+1500
             self.pi.set_servo_pulsewidth(self.servoPin,self.angle)
     
     def stop(self):
@@ -89,21 +89,5 @@ class Motor():
     
     def cleanUp(self):
         self.pi.stop()
-
-window = Window.__new__(Window)
-window.running = True
-window.move = False
-import pygame
-pygame.init()
-pygame.display.set_caption('motor movement')
-window.screen = pygame.display.set_mode((600,600))
-window.clock = pygame.time.Clock()
-if config.motorRun == True:
-    motor = Motor(window)
-if config.servoRun == True:
-    servo = Servo(window)
-
-
-window.main()
 
 

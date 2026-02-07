@@ -1,6 +1,4 @@
-#import os
-#os.environ['SDL_VIDEODRIVER'] = 'x11'       # ensure X11 driver
-#os.environ['SDL_OPENGL'] = 'software'       # use software OpenGL
+#05/02/2026
 import pygame
 from config import Config
 config = Config()
@@ -9,7 +7,7 @@ class Window():
     def __init__(self):
         self.running = True
         self.move = False
-        self.move_slider = False
+        self.lastMotorPos = 300
         pygame.init()
         pygame.display.set_caption('motor movement')
         self.screen = pygame.display.set_mode((600,600))
@@ -22,52 +20,98 @@ class Window():
     
     def main(self):
         try:
-            button = pygame.Rect(10,10,75,75)
-            slider = pygame.Rect(config.slider_x,config.slider_y,config.slider_len,config.slider_height)
-            stopButton = pygame.Rect(515,10,75,75)
+            squareSide = 75
+            margin = 10
+            # MAKE THE COMMANDS ON PYGAME'S WINDOW
+            
+            # here lies the all-mighty button for 32 / 256 throttle
+            button = pygame.Rect(margin,margin,squareSide,squareSide)
+            
+            #slider to set motor's speed
+            slider_motor_speed = pygame.Rect(config.slider_x,config.slider_y,config.slider_len,config.slider_height)
+            
+            #slider to set servo's angle
+            slider_servo_1 = pygame.Rect(config.slider_x,config.slider_servo_y,config.slider_len,config.slider_height)
+            
+            #DEFCON 1
+            stopButton = pygame.Rect(600-squareSide-margin,margin,squareSide,squareSide)
             
             while self.running: 
                 
-                self.screen.fill((255,255,255))
-                
-                pygame.draw.rect(self.screen, (0,255,0), button)
-                pygame.draw.rect(self.screen, (0,0,255), slider)
-                pygame.draw.rect(self.screen, (255,0,0), stopButton)
-                
+                self.screen.fill((config.WHITE))
+                #DRAW COMMANDS
+                pygame.draw.rect(self.screen, (config.GREEN), button)
+                pygame.draw.rect(self.screen, (config.BLUE), slider_motor_speed)
+                pygame.draw.rect(self.screen, (config.BLUE), slider_servo_1)
+                pygame.draw.rect(self.screen, (config.RED), stopButton)
+                #GET THE POSITION FOR THE SLIDER MARKER
                 self.mouse_pos = pygame.mouse.get_pos()
-                move_slider = getattr(self, 'move_slider', False)
+                move_motor_slider = getattr(self, 'move_motor_slider', False)
+                move_servo_slider = getattr(self, 'move_servo_slider', False)
                 
-                if move_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
-                    pygame.draw.circle(self.screen,(0,0,0),(self.mouse_pos[0],config.slider_y+config.slider_height/2),10)
+                #IF THE SLIDERMARK IS ABLE TO MOVE AND IS INSIDE ITS RECTANGLE
+                if move_motor_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
+                    #draw this slider updating
+                    pygame.draw.circle(self.screen,(config.BLACK),(self.mouse_pos[0],config.slider_y+config.slider_height/2),10)
                     self.speed = (self.mouse_pos[0] - (config.slider_x+config.slider_len/2))/2
-                    self.lastMousePos = self.mouse_pos
-                else:
-                    if getattr(self, 'lastMousePos', None) != None:
-                        pygame.draw.circle(self.screen,(0,0,0),(self.lastMousePos[0],config.slider_y+config.slider_height/2),10)
-                    else:
-                        pygame.draw.circle(self.screen,(0,0,0),(300,config.slider_y+config.slider_height/2),10)
+                    self.lastMotorPos = self.mouse_pos
+                    #draw the last known other sliders
+                    last_servo = getattr(self,'lastServoPos',(300,0))
+                    pygame.draw.circle(self.screen,(config.BLACK),(last_servo[0],config.slider_servo_y+config.slider_height/2),10)
+                    
+                elif move_servo_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
+                    #draw this slider updating
+                    pygame.draw.circle(self.screen,(config.BLACK),(self.mouse_pos[0],config.slider_servo_y+config.slider_height/2),10)
+                    self.servo_angle = (self.mouse_pos[0] - (config.slider_x+config.slider_len/2))/2
+                    self.lastServoPos = self.mouse_pos
+                    #draw the last known other sliders
+                    last_motor = getattr(self,'lastMotorPos',(300,0))
+                    pygame.draw.circle(self.screen,(config.BLACK),(last_motor[0],config.slider_y+config.slider_height/2),10)
+                    
+                else:#IF MOUSE IS NOT IN SLIDER MARK POSITION
+                    if getattr(self, 'lastMotorPos', None) != None:
+                        pygame.draw.circle(self.screen,(config.BLACK),(self.lastMotorPos[0],config.slider_y+config.slider_height/2),10)
+                        self.move_motor_slider = False
+                    else:#IF SHOULDNT MOVE MOTOR SLIDER
+                        pygame.draw.circle(self.screen,(config.BLACK),(300,config.slider_y+config.slider_height/2),10)
                         self.speed = 0
-                    self.move_slider = False
+                        
+                    if getattr(self, 'lastServoPos', None) != None:
+                        pygame.draw.circle(self.screen,(config.BLACK),(self.lastServoPos[0],config.slider_servo_y+config.slider_height/2),10)
+                        self.move_servo_slider = False
+                    else:#IF SHOULDNT MOVE SERVO SLIDER
+                        pygame.draw.circle(self.screen,(config.BLACK),(300,config.slider_servo_y+config.slider_height/2),10)
+                        self.servo_angle = 0
                     
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.running = False
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         #print('MOUSE CLICK')
-                        if button.collidepoint(event.pos):
+                        if button.collidepoint(event.pos):#FIRST BUTTON LOGIC
                             self.move = True
-                            self.speed = 32
+                            self.speed = 31
                             self.lastMousePos = (config.slider_x+config.slider_len/2+self.speed*2,self.mouse_pos[1])
-                        if slider.collidepoint(event.pos):
+                        if slider_motor_speed.collidepoint(event.pos):#MOTOR SPEED SLIDER LOGIC
                             self.move = True
-                            self.move_slider = True
-                        if stopButton.collidepoint(event.pos):
-                            print('stop')
-                            self.move = False
+                            self.motor_move = True
+                            self.move_motor_slider = True
+                        if slider_servo_1.collidepoint(event.pos):
+                            self.move = True
+                            self.servo_move = True
+                            self.move_servo_slider = True
+                        if stopButton.collidepoint(event.pos):#DEFCON 1 ACTIVATION
+                            #print('stop')
+                            self.move_motor_slider = False
+                            self.move_servo_slider = False
+                            self.lastMotorPos = (300,0)
+                            self.lastServoPos = (300,0)
                             self.lastMousePos = None
                     elif event.type == pygame.MOUSEBUTTONUP:
                         #print('MOUSE UP')
-                        self.move_slider = False
+                        #STOP SLIDERS IF MOUSE UP
+                        self.move_servo_slider = False
+                        self.move_motor_slider = False
                         if button.collidepoint(event.pos):
                             self.move = False
 
