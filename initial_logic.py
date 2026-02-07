@@ -27,9 +27,9 @@ class Move():
             if getattr(self.window, 'move', False):
                 self.speed = getattr(self.window, 'speed', 32)
                 if self.speed > 0:
-                    self.moveFwd(self.speed)
+                    self.moveFwd()
                 elif self.speed < 0:
-                    self.moveBack(self.speed)
+                    self.moveBack()
                 self.window.move = False
             if getattr(self.window, 'move') == False:
                 self.stop()
