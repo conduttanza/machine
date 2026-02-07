@@ -42,12 +42,15 @@ class Move():
     def moveBack(self):
         self.pi.write(self.AIN1,0)
         self.pi.write(self.AIN2,1)
-        self.pi.set_PWM_dutycycle(self.PWM,self.speed)
+        self.pi.set_PWM_dutycycle(self.PWM,-self.speed)
 
     def stop(self):
         self.pi.set_PWM_dutycycle(self.PWM,0)
         self.pi.write(self.AIN1, 0)
         self.pi.write(self.AIN2, 0)
+    
+    def cleanUp(self):
+        self.pi.stop()
 
 window = Window.__new__(Window)
 window.running = True
@@ -60,4 +63,5 @@ window.clock = pygame.time.Clock()
 move = Move(window)
 
 window.main()
+
 
