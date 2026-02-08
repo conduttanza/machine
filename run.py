@@ -2,7 +2,6 @@
 from config import Config
 config = Config()
 from window import Window
-import pygame
 
 # 0 if you dont have a raspberry pi connected
 # else 1

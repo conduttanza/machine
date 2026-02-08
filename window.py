@@ -13,6 +13,7 @@ class Window():
         self.lastMotorPos = (300,0)
         self.lastServoPos_1 = (300,0)
         self.lastServoPos_2 = (300,0)
+        self.line_angle = (300,0)
         self.lastMousePos = None
         self.speed = 0
         self.servo_1_angle = 0
@@ -50,6 +51,7 @@ class Window():
                 self.last_servo_1 = getattr(self,'lastServoPos_1',(300, 0))
                 self.last_servo_2 = getattr(self,'lastServoPos_2',(300, 0))
                 
+                self.drawLineMovementPoint()
                 if self.move_motor_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
                     #draw this slider updating
                     self.drawMotorSliderPoint()
@@ -154,6 +156,13 @@ class Window():
             )
             #DEFCON 1
         self.stopButton = pygame.Rect(600-self.squareSide-self.margin,self.margin,self.squareSide,self.squareSide)
+        #LINE MOV
+        self.line_movement = pygame.Rect(
+                config.slider_x,
+                config.slider_servo_y+2*(config.slider_height+self.margin), 
+                config.slider_len, 
+                config.slider_height
+            )
     
     def draw(self):
         pygame.draw.rect(self.screen, (config.GREEN), self.button)
@@ -163,6 +172,8 @@ class Window():
                 
         pygame.draw.rect(self.screen, (config.BLUE), self.slider_servo_1)
         pygame.draw.rect(self.screen, (config.BLUE), self.slider_servo_2)
+        
+        pygame.draw.rect(self.screen, config.BLACK, self.line_movement)
     
     def drawMotorSliderPoint(self):
         pygame.draw.circle(
@@ -204,6 +215,15 @@ class Window():
                 (config.BLACK),
                 (self.last_servo_2[0],
                 config.slider_servo_y+config.slider_height+self.margin+config.slider_height/2),
+                10
+            )
+    
+    def drawLineMovementPoint(self):
+        pygame.draw.circle(
+                self.screen,
+                (config.WHITE),
+                (self.line_angle[0],
+                config.slider_servo_y+2*(config.slider_height+self.margin)+config.slider_height/2),
                 10
             )
     
@@ -254,3 +274,11 @@ class Window():
         self.move_motor_slider = False
         if self.button.collidepoint(event.pos):
             self.move = False
+
+    def findLineAngle(self):
+        pass
+
+
+
+
+
