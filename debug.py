@@ -13,9 +13,13 @@ class Servo_not_pi():
         
     def update(self):
         while True:
-            self.angle = getattr(self.window, 'servo_angle', 0)*(4000/(config.slider_len))+1500
-            if getattr(self, 'angle',1500) != 1500:
-                print(f'angle: {round(self.angle)}')
+            self.angle_1 = getattr(self.window, 'servo_1_angle', 0)*(4000/(config.slider_len))+1500
+            self.angle_2 = getattr(self.window, 'servo_2_angle', 0)*(4000/(config.slider_len))+1500
+            if getattr(self, 'angle_1',1500) != 1500:
+                print(f'angle 1: {round(self.angle_1)}')
+            if getattr(self, 'angle_2',1500) != 1500:
+                print(f'angle 2: {round(self.angle_2)}')
+            time.sleep(config.delay)
     
     def stop(self):
         print('stop')
@@ -30,7 +34,7 @@ class Motor_not_pi():
     def update(self):
         self.speed = 0
         while True:
-            if getattr(self.window, 'move', False):
+            if getattr(self.window, 'motor_move', False):
                 self.targetSpeed = getattr(self.window, 'speed', 0)
                 #print(f'self.speed = {self.targetSpeed}')
                 if self.targetSpeed >= 0:
@@ -45,14 +49,14 @@ class Motor_not_pi():
                     elif self.speed < self.targetSpeed - 7:
                         self.speed += 8
                     self.moveBack()
-            if getattr(self.window, 'move') == False:
+            if getattr(self.window, 'motor_move') == False:
                 actSpeed = getattr(self,'speed')
                 if actSpeed < 0:
                     #print('backwards')
-                    #self.moveBack()
+                    self.moveBack()
                     self.speed +=8
                 else:
-                    #self.moveFwd()
+                    self.moveFwd()
                     self.speed -= 8
                 if -12 < actSpeed < 12:
                     self.stop()

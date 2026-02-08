@@ -13,17 +13,22 @@ class Servo():
         self.pi = pigpio.pi()
         if not self.pi.connected:
             exit()
-        self.servoPin = 23
-        self.pi.set_servo_pulsewidth(self.servoPin,1500)
+        self.servo_1_pin = 23
+        self.servo_2_pin = 21
+        self.pi.set_servo_pulsewidth(self.servo_1_pin,1500)
+        self.pi.set_servo_pulsewidth(self.servo_2_pin,1500)
         Thread(target=self.update, daemon=True).start()
         
     def update(self):
         while True:
-            self.angle = getattr(self.window, 'servo_angle', 0)*(4000/(config.slider_len))+1500
-            self.pi.set_servo_pulsewidth(self.servoPin,self.angle)
+            self.angle_1 = getattr(self.window, 'servo_1_angle', 0)*(4000/(config.slider_len))+1500
+            self.angle_2 = getattr(self.window, 'servo_1_angle', 0)*(4000/(config.slider_len))+1500
+            self.pi.set_servo_pulsewidth(self.servo_1_pin,self.angle_1)
+            self.pi.set_servo_pulsewidth(self.servo_2_pin,self.angle_2)
     
     def stop(self):
-        self.pi.set_servo_pulsewidth(self.servoPin, 0)
+        self.pi.set_servo_pulsewidth(self.servo_1_pin, 0)
+        self.pi.set_servo_pulsewidth(self.servo_2_pin, 0)
 
 class Motor():
     def __init__(self, window):
@@ -43,7 +48,7 @@ class Motor():
     def update(self):
         self.speed = 0
         while True:
-            if getattr(self.window, 'move', False):
+            if getattr(self.window, 'motor_move', False):
                 self.targetSpeed = getattr(self.window, 'speed', 8)
                 #print(f'self.speed = {self.speed}')
                 if self.targetSpeed >= 0:
@@ -66,7 +71,7 @@ class Motor():
                     elif self.speed > 0:
                         self.speed = 0
                     self.moveBack()
-            if getattr(self.window, 'move') == False:
+            if getattr(self.window, 'motor_move') == False:
                 actSpeed = getattr(self,'speed')
                 if actSpeed < 0:
                     #print('backwards')

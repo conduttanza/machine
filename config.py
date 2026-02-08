@@ -4,11 +4,12 @@ class Config():
     labelForStop = 'STOP'
     labelForCruise = 'CRUISE'
     #
-    motorRun = True
+    motorRun = False
     servoRun = True
+    servo2Run = True
     #
     run = True
-    delay = 0.1
+    delay = 0.05
     App = True
     #
     BLACK = (0,0,0)
@@ -19,8 +20,8 @@ class Config():
     slider_len = 450
     slider_height = 50
     slider_x = (600-slider_len)/2
-    slider_y = 200
-    slider_servo_y = 260
+    slider_y = 100
+    slider_servo_y = 250
     
     
     
