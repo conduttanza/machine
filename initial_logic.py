@@ -2,7 +2,6 @@
 
 from config import Config
 config = Config()
-from window import Window
 import pigpio
 from threading import Thread
 import time
@@ -101,6 +100,6 @@ class Motor():
         self.pi.write(self.AIN2, 0)
     
     def cleanUp(self):
-        self.pi.stop()
+            self.pi.stop()
 
 

@@ -1,6 +1,8 @@
 #05/02/2026
 
 class Config():
+    screenSide = 600
+    #
     servo_1 = 23
     servo_2 = 11
     #servo_3 = 9 #MAGARI NO, gnd
@@ -18,6 +20,8 @@ class Config():
     delay = 0.05
     App = True
     #
+    squareSide = 75
+    margin = 10
     BLACK = (0,0,0)
     WHITE = (255,255,255)
     GREEN = (0,255,0)

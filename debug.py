@@ -15,10 +15,7 @@ class Servo_not_pi():
         while True:
             self.angle_1 = getattr(self.window, 'servo_1_angle', 0)*(4000/(config.slider_len))+1500
             self.angle_2 = getattr(self.window, 'servo_2_angle', 0)*(4000/(config.slider_len))+1500
-            if getattr(self, 'angle_1',1500) != 1500:
-                print(f'angle 1: {round(self.angle_1)}')
-            if getattr(self, 'angle_2',1500) != 1500:
-                print(f'angle 2: {round(self.angle_2)}')
+            print(f'angle 1: {round(self.angle_1)}',f'angle 2: {round(self.angle_2)}')
             time.sleep(config.delay)
     
     def stop(self):
