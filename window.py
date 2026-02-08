@@ -118,7 +118,7 @@ class Window():
                             config.slider_servo_y+config.slider_height+margin+config.slider_height/2),
                             10
                         )
-                                    
+                
                 elif move_servo_2_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
                     #draw this slider updating
                     pygame.draw.circle(

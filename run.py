@@ -6,7 +6,7 @@ import pygame
 
 # 0 if you dont have a raspberry pi connected
 # else 1
-pi = 0
+pi = 1
 
 if pi == True:
     from initial_logic import Motor, Servo

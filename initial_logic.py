@@ -13,8 +13,8 @@ class Servo():
         self.pi = pigpio.pi()
         if not self.pi.connected:
             exit()
-        self.servo_1_pin = 23
-        self.servo_2_pin = 21
+        self.servo_1_pin = config.servo_1
+        self.servo_2_pin = config.servo_2
         self.pi.set_servo_pulsewidth(self.servo_1_pin,1500)
         self.pi.set_servo_pulsewidth(self.servo_2_pin,1500)
         Thread(target=self.update, daemon=True).start()
@@ -22,7 +22,7 @@ class Servo():
     def update(self):
         while True:
             self.angle_1 = getattr(self.window, 'servo_1_angle', 0)*(4000/(config.slider_len))+1500
-            self.angle_2 = getattr(self.window, 'servo_1_angle', 0)*(4000/(config.slider_len))+1500
+            self.angle_2 = getattr(self.window, 'servo_2_angle', 0)*(4000/(config.slider_len))+1500
             self.pi.set_servo_pulsewidth(self.servo_1_pin,self.angle_1)
             self.pi.set_servo_pulsewidth(self.servo_2_pin,self.angle_2)
     

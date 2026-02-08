@@ -1,6 +1,12 @@
 #05/02/2026
 
 class Config():
+    servo_1 = 23
+    servo_2 = 11
+    #servo_3 = 9 #MAGARI NO, gnd
+    servo_4 = 10
+    #servo_5 = 25 #MAGARI NO, gnd
+    #servo_6 = 2 #MAGARI NO, 5v
     labelForStop = 'STOP'
     labelForCruise = 'CRUISE'
     #
