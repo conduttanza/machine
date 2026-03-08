@@ -1,10 +1,13 @@
 #05/02/2026
+import math
 import pygame
 from config import Config
 config = Config()
 from text_labels import Label
+
 class Window():
     def __init__(self):
+        self.pi = math.pi
         self.running = True
         self.move = False
         self.move_motor_slider = False
@@ -13,11 +16,12 @@ class Window():
         self.lastMotorPos = (300,0)
         self.lastServoPos_1 = (300,0)
         self.lastServoPos_2 = (300,0)
-        self.line_angle = (300,0)
+        self.lastLineMovPos = (300,0)
         self.lastMousePos = None
         self.speed = 0
         self.servo_1_angle = 0
         self.servo_2_angle = 0
+        self.line_pos = 0
         self.squareSide = config.squareSide
         self.margin = config.margin
         pygame.init()
@@ -45,19 +49,22 @@ class Window():
                 self.move_motor_slider = getattr(self, 'move_motor_slider', False)
                 self.move_servo_1_slider = getattr(self, 'move_servo_1_slider', False)
                 self.move_servo_2_slider = getattr(self, 'move_servo_2_slider', False)
+                self.move_line_slider = getattr(self, 'move_line_slider', False)
                 
                 #IF THE SLIDERMARK IS ABLE TO MOVE AND IS INSIDE ITS RECTANGLE
                 self.last_motor = getattr(self,'lastMotorPos',(300, 0))
                 self.last_servo_1 = getattr(self,'lastServoPos_1',(300, 0))
                 self.last_servo_2 = getattr(self,'lastServoPos_2',(300, 0))
+                self.last_line_movement = getattr(self,'lastLineMovPos',(300, 0))
                 
-                self.drawLineMovementPoint()
+                
                 if self.move_motor_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
                     #draw this slider updating
                     self.drawMotorSliderPoint()
                     #draw the last known other sliders
                     self.drawLastSliderServo1()
                     self.drawLastSliderServo2()
+                    self.drawLastLineMovPos()
                     #change vars
                     self.speed = (self.mouse_pos[0] - (config.slider_x+config.slider_len/2))/2
                     self.lastMotorPos = self.mouse_pos
@@ -68,6 +75,7 @@ class Window():
                     #draw the last known other sliders
                     self.drawLastSliderMotor()
                     self.drawLastSliderServo2()
+                    self.drawLastLineMovPos()
                     #change vars
                     self.servo_1_angle = (self.mouse_pos[0] - (config.slider_x+config.slider_len/2))/2
                     self.lastServoPos_1 = self.mouse_pos
@@ -78,9 +86,22 @@ class Window():
                     #draw the last known other sliders
                     self.drawLastSliderMotor()
                     self.drawLastSliderServo1()
+                    self.drawLastLineMovPos()
                     #change vars
                     self.servo_2_angle = (self.mouse_pos[0] - (config.slider_x+config.slider_len/2))/2
                     self.lastServoPos_2 = self.mouse_pos
+                
+                elif self.move_line_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
+                    #draw this slider updating
+                    self.drawLineMovementPoint()
+                    #draw the last known other sliders
+                    self.drawLastSliderMotor()
+                    self.drawLastSliderServo1()
+                    self.drawLastSliderServo2()
+                    #change vars
+                    self.findLineAngle()
+                    self.line_pos = (self.mouse_pos[0] - (config.slider_x+config.slider_len/2))/2
+                    self.lastLineMovPos = self.mouse_pos
                     
                 #MOTOR
                 else:#IF MOUSE IS NOT IN SLIDER MARK POSITION
@@ -118,7 +139,20 @@ class Window():
                                 10
                             )
                         self.servo_2_angle = 0
-                    
+                
+                #LINE MOVEMENT
+                    if getattr(self, 'lastLineMovPos', None) != None:
+                        self.drawLastLineMovPos()
+                        self.move_line_slider = False
+                    else:#IF SHOULDNT MOVE LINE SLIDER
+                        pygame.draw.circle(
+                                self.screen,
+                                (config.BLACK),
+                                (config.screenSide/2,config.slider_servo_y+2*(config.slider_height+self.margin)),
+                                10
+                            )
+                        self.line_pos = 0
+                
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.running = False
@@ -200,7 +234,16 @@ class Window():
             config.slider_servo_y+config.slider_height+self.margin+config.slider_height/2),
             10
             )
-    
+
+    def drawLineMovementPoint(self):
+        pygame.draw.circle(
+                self.screen,
+                (config.WHITE),
+                (self.mouse_pos[0],
+                config.slider_servo_y+2*(config.slider_height+self.margin)+config.slider_height/2),
+                10
+            )
+        
     def drawLastSliderServo1(self):
         pygame.draw.circle(
                 self.screen,
@@ -217,16 +260,16 @@ class Window():
                 config.slider_servo_y+config.slider_height+self.margin+config.slider_height/2),
                 10
             )
-    
-    def drawLineMovementPoint(self):
+        
+    def drawLastLineMovPos(self):
         pygame.draw.circle(
                 self.screen,
                 (config.WHITE),
-                (self.line_angle[0],
+                (self.lastLineMovPos[0],
                 config.slider_servo_y+2*(config.slider_height+self.margin)+config.slider_height/2),
                 10
             )
-    
+        
     def drawLastSliderMotor(self):
         pygame.draw.circle(
             self.screen,
@@ -237,23 +280,36 @@ class Window():
     
     def mouseDown(self, event):
         #print('MOUSE CLICK')
-        if self.button.collidepoint(event.pos):#FIRST BUTTON LOGIC
+        if self.button.collidepoint(event.pos):#CRUISE BUTTON LOGIC
             self.motor_move = True
             self.speed = 31
-            self.lastMousePos = (config.slider_x+config.slider_len/2+self.speed*2,self.mouse_pos[1])
-        if self.slider_motor_speed.collidepoint(event.pos):#MOTOR SPEED SLIDER LOGIC
+            self.lastMotorPos= (config.slider_x+config.slider_len/2+self.speed*2,self.mouse_pos[1])
+            self.move_motor_slider = True
+        
+        #MOTOR SPEED SLIDER LOGIC
+        if self.slider_motor_speed.collidepoint(event.pos):
             self.move = True
             self.motor_move = True
             self.move_motor_slider = True
+            
         if self.slider_servo_1.collidepoint(event.pos):
             self.move = True
             self.servo_1_move = True
             self.move_servo_1_slider = True
+            
         if self.slider_servo_2.collidepoint(event.pos):
             self.move = True
             self.servo_2_move = True
             self.move_servo_2_slider = True
-        if self.stopButton.collidepoint(event.pos):#DEFCON 1 ACTIVATION
+        
+        if self.line_movement.collidepoint(event.pos):
+            self.move = True
+            self.last_line_move = True
+            self.move_line_slider = True
+            #print('line mov collide')
+            
+        #DEFCON 1 ACTIVATION
+        if self.stopButton.collidepoint(event.pos):
             #print('stop')
             self.move_motor_slider = False
             self.move_servo_1_slider = False
@@ -261,10 +317,12 @@ class Window():
             self.lastMotorPos = (300,0)
             self.lastServoPos_1 = (300,0)
             self.lastServoPos_2 = (300,0)
+            self.lastLineMovPos = (300,0)
             self.lastMousePos = None
             self.speed = 0
             self.servo_1_angle = 0
             self.servo_2_angle = 0
+            self.line_pos = 0
             
     def mouseUp(self, event):
         #print('MOUSE UP')
@@ -272,13 +330,28 @@ class Window():
         self.move_servo_1_slider = False
         self.move_servo_2_slider = False
         self.move_motor_slider = False
+        self.move_line_slider = False
         if self.button.collidepoint(event.pos):
             self.move = False
 
     def findLineAngle(self):
-        pass
-
-
+        linePos = round((self.line_pos+112.5)/(2*112.5)*100, 2)
+        servo1rad = round(math.acos(linePos/200),2)
+        servo2rad = round(math.pi - 2*servo1rad,2)
+        servo1deg = round(servo1rad*90/math.pi,1)
+        servo2deg = round(servo2rad*90/math.pi,1)
+        self.servo_1_angle = round(servo1deg/90*112.5,1)
+        self.servo_2_angle = round(servo2deg/90*112.5,1)
+        '''
+        servo1angle = self.servo_1_angle*(4000/(config.slider_len))+1500
+        servo2angle = self.servo_2_angle*(4000/(config.slider_len))+1500
+        servo1rad = round(servo1angle/1500*self.pi - self.pi, 3)
+        servo2rad = round(servo2angle/1500*self.pi - self.pi, 3)
+        '''
+        #print(f'servo 1: {servo1rad} rad {servo1deg} deg servo 2: {servo2rad} rad {servo2deg} deg line pos: {linePos}%')
+        #print(f'servo 1: {self.servo_1_angle} servo 2: {self.servo_2_angle}')
+        
+        
 
 
 
