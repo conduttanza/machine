@@ -5,7 +5,7 @@ from window import Window
 
 # 0 if you dont have a raspberry pi connected
 # else 1
-pi = 1
+pi = 0
 
 if pi == True:
     from initial_logic import Motor, Servo

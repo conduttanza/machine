@@ -340,18 +340,7 @@ class Window():
         servo2rad = round(math.pi - 2*servo1rad,2)
         servo1deg = round(servo1rad*90/math.pi,1)
         servo2deg = round(servo2rad*90/math.pi,1)
-        self.servo_1_angle = round(servo1deg/90*112.5,1)
-        self.servo_2_angle = round(servo2deg/90*112.5,1)
-        '''
-        servo1angle = self.servo_1_angle*(4000/(config.slider_len))+1500
-        servo2angle = self.servo_2_angle*(4000/(config.slider_len))+1500
-        servo1rad = round(servo1angle/1500*self.pi - self.pi, 3)
-        servo2rad = round(servo2angle/1500*self.pi - self.pi, 3)
-        '''
+        self.servo_1_angle = round((servo1deg/90)*225,1)
+        self.servo_2_angle = round(servo2deg/90*225,1)
         #print(f'servo 1: {servo1rad} rad {servo1deg} deg servo 2: {servo2rad} rad {servo2deg} deg line pos: {linePos}%')
         #print(f'servo 1: {self.servo_1_angle} servo 2: {self.servo_2_angle}')
-        
-        
-
-
-
