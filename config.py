@@ -1,7 +1,7 @@
 #05/02/2026
 
 class Config():
-    screenSide = 600
+    screenSide = 725
     #
     servo_1 = 23
     servo_2 = 11
@@ -27,11 +27,11 @@ class Config():
     GREEN = (0,255,0)
     RED = (255,0,0)
     BLUE = (0,0,255)
-    slider_len = 450
-    slider_height = 50
-    slider_x = (600-slider_len)/2
-    slider_y = 100
-    slider_servo_y = 250
+    slider_len = round(screenSide/1.333,0)
+    slider_height = round(screenSide/12,0)
+    slider_x = (screenSide-slider_len)/2
+    slider_y = round(screenSide/6,0)
+    slider_servo_y = round(screenSide/2.4,0)
     
     
     

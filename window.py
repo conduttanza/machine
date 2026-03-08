@@ -13,10 +13,11 @@ class Window():
         self.move_motor_slider = False
         self.move_servo_1_slider = False
         self.move_servo_2_slider = False
-        self.lastMotorPos = (300,0)
-        self.lastServoPos_1 = (300,0)
-        self.lastServoPos_2 = (300,0)
-        self.lastLineMovPos = (300,0)
+        self.center_side = config.screenSide/2
+        self.lastMotorPos = (self.center_side,0)
+        self.lastServoPos_1 = (self.center_side,0)
+        self.lastServoPos_2 = (self.center_side,0)
+        self.lastLineMovPos = (self.center_side,0)
         self.lastMousePos = None
         self.speed = 0
         self.servo_1_angle = 0
@@ -52,10 +53,10 @@ class Window():
                 self.move_line_slider = getattr(self, 'move_line_slider', False)
                 
                 #IF THE SLIDERMARK IS ABLE TO MOVE AND IS INSIDE ITS RECTANGLE
-                self.last_motor = getattr(self,'lastMotorPos',(300, 0))
-                self.last_servo_1 = getattr(self,'lastServoPos_1',(300, 0))
-                self.last_servo_2 = getattr(self,'lastServoPos_2',(300, 0))
-                self.last_line_movement = getattr(self,'lastLineMovPos',(300, 0))
+                self.last_motor = getattr(self,'lastMotorPos',(self.center_side, 0))
+                self.last_servo_1 = getattr(self,'lastServoPos_1',(self.center_side, 0))
+                self.last_servo_2 = getattr(self,'lastServoPos_2',(self.center_side, 0))
+                self.last_line_movement = getattr(self,'lastLineMovPos',(self.center_side, 0))
                 
                 
                 if self.move_motor_slider and config.slider_x <= self.mouse_pos[0] <= config.slider_x+config.slider_len:
@@ -168,7 +169,7 @@ class Window():
             pygame.quit()
     
     def labels(self):
-        Label(self.screen,config.labelForStop,600-self.squareSide+0.2*self.margin,3*self.margin)
+        Label(self.screen,config.labelForStop,config.screenSide-self.squareSide+0.2*self.margin,3*self.margin)
         Label(self.screen,config.labelForCruise,self.margin,3*self.margin)
     
     def shapes(self):
@@ -189,7 +190,7 @@ class Window():
                 config.slider_height
             )
             #DEFCON 1
-        self.stopButton = pygame.Rect(600-self.squareSide-self.margin,self.margin,self.squareSide,self.squareSide)
+        self.stopButton = pygame.Rect(config.screenSide-self.squareSide-self.margin,self.margin,self.squareSide,self.squareSide)
         #LINE MOV
         self.line_movement = pygame.Rect(
                 config.slider_x,
@@ -314,10 +315,10 @@ class Window():
             self.move_motor_slider = False
             self.move_servo_1_slider = False
             self.move_servo_2_slider = False
-            self.lastMotorPos = (300,0)
-            self.lastServoPos_1 = (300,0)
-            self.lastServoPos_2 = (300,0)
-            self.lastLineMovPos = (300,0)
+            self.lastMotorPos = (self.center_side,0)
+            self.lastServoPos_1 = (self.center_side,0)
+            self.lastServoPos_2 = (self.center_side,0)
+            self.lastLineMovPos = (self.center_side,0)
             self.lastMousePos = None
             self.speed = 0
             self.servo_1_angle = 0
@@ -335,12 +336,13 @@ class Window():
             self.move = False
 
     def findLineAngle(self):
-        linePos = round((self.line_pos+112.5)/(2*112.5)*100, 2)
+        linePos = round((4*self.line_pos)/(config.slider_len)*100, 2)
         servo1rad = round(math.acos(linePos/200),2)
         servo2rad = round(math.pi - 2*servo1rad,2)
         servo1deg = round(servo1rad*90/math.pi,1)
         servo2deg = round(servo2rad*90/math.pi,1)
-        self.servo_1_angle = round((servo1deg/90)*225,1)
-        self.servo_2_angle = round(servo2deg/90*225,1)
+        self.servo_1_angle = round(servo1deg/360*config.slider_len,1)
+        self.servo_2_angle = round(servo2deg/360*config.slider_len,1)
         #print(f'servo 1: {servo1rad} rad {servo1deg} deg servo 2: {servo2rad} rad {servo2deg} deg line pos: {linePos}%')
-        #print(f'servo 1: {self.servo_1_angle} servo 2: {self.servo_2_angle}')
+        #print(f'line pos: {self.line_pos}, line pos %: {linePos}%, slider len : {config.slider_len}')
+        print(f'servo 1: {self.servo_1_angle} servo 2: {self.servo_2_angle}')
